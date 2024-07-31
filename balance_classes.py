@@ -1,7 +1,22 @@
 import torch
-from preprocessing.pydataset3 import PDB_Dataset
-from sklearn.model_selection import train_test_split
+import torch.nn as nn
+import torch.optim as optim
+import numpy as np
 from torch_geometric.loader import DataLoader
+from sklearn.metrics import accuracy_score
+from tqdm import tqdm
+from sklearn.model_selection import train_test_split
+import seaborn as sns
+import matplotlib.pyplot as plt
+from preprocessing.pydataset3 import PDB_Dataset
+from sklearn.metrics import auc, precision_recall_curve, roc_curve, confusion_matrix
+from torch_geometric.nn import GCNConv, global_mean_pool
+import torch.nn.functional as F
+from torch_geometric.loader import DataLoader
+from balance_classes import calculate_class_weights
+from focal_loss import FocalLoss
+from model import GCN
+from plot_metrics import plot_accuracies, plot_confusion_matrix, plot_roc_pr_curves
 
 
 def calculate_class_weights(dataset, device):
@@ -23,26 +38,6 @@ def calculate_class_weights(dataset, device):
     class_weights = 1.0 / (class_counts / class_counts.sum())
     print(class_weights)
     return class_weights.to(device)
-
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import numpy as np
-from torch_geometric.loader import DataLoader
-from sklearn.metrics import accuracy_score
-from tqdm import tqdm
-from sklearn.model_selection import train_test_split
-import seaborn as sns
-import matplotlib.pyplot as plt
-from preprocessing.pydataset3 import PDB_Dataset
-from sklearn.metrics import auc, precision_recall_curve, roc_curve, confusion_matrix
-from torch_geometric.nn import GCNConv, global_mean_pool
-import torch.nn.functional as F
-from torch_geometric.loader import DataLoader
-from balance_classes import calculate_class_weights
-from focal_loss import FocalLoss
-from model import GCN
-from plot_metrics import plot_accuracies, plot_confusion_matrix, plot_roc_pr_curves
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
